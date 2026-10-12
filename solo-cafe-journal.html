@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solo Café Journal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Allura&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--cream:#fffdf9;--brown:#5c4033;--bl:#8a6040;--car:#c9a46b;--cs:rgba(231, 57, 13, 0.11);--cb:rgba(201,149,106,.36);--sc:#b38b6d;--tx:#3d2b1a;--mu:rgba(180,130,90,.42)}
+body{background:linear-gradient(to bottom,#f8f3ed,#efe3d3);font-family:'Cormorant Garamond',serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:28px 16px 60px}
+.journal{width:100%;max-width:700px;background:var(--cream);border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.1);border:1px solid #f0dcc8;position:relative;overflow:hidden}
+.journal::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(180,130,90,.2) 1px,transparent 1px);background-size:22px 22px;pointer-events:none;z-index:0}
+.page{display:none;flex-direction:column;padding:44px 44px 32px;position:relative;z-index:1;min-height:580px}
+.page.active{display:flex}
+.fl{position:absolute;pointer-events:none;z-index:2}
+.fl.tl{top:-4px;left:-4px}.fl.tr{top:-4px;right:-4px}.fl.bl{bottom:-4px;left:-4px}.fl.br{bottom:-4px;right:-4px}
+.cd{position:absolute;pointer-events:none;z-index:2}
+/* COVER */
+.cover{align-items:center;justify-content:center;text-align:center;padding-top:72px;padding-bottom:56px}
+.stamp{width:76px;height:76px;border:1.5px solid var(--car);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;opacity:.6;margin:0 auto 26px}
+.stamp span{font-size:12px;color:var(--car);letter-spacing:.08em;text-transform:uppercase;line-height:1.6}
+.dr{display:flex;align-items:center;gap:12px;width:78%;margin:0 auto 18px}
+.dl{flex:1;height:1px;background:var(--cb)}.dd{width:5px;height:5px;border-radius:50%;background:rgba(180,130,90,.38)}
+.cover h1{font-family:'Playfair Display',serif;font-size:52px;font-weight:600;color:var(--brown);line-height:1.05;margin-bottom:6px}
+.sc{font-family:'Allura',cursive;font-size:28px;color:var(--sc);margin-bottom:28px}
+.cpills{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:28px}
+.pill{border:1px solid var(--cb);border-radius:100px;padding:7px 20px;font-size:15px;color:#7a4a25;background:var(--cs);letter-spacing:.03em}
+.cquote{font-family:'Playfair Display',serif;font-style:italic;font-size:17px;color:var(--bl);line-height:1.65;max-width:380px;margin:0 auto 36px}
+.btn-start{background:var(--car);color:white;border:none;border-radius:100px;padding:15px 48px;font-family:'Cormorant Garamond',serif;font-size:18px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .2s,transform .1s}
+.btn-start:hover{background:#b07a52;transform:scale(1.02)}
+/* PAGE HEADERS */
+.ey{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--car);margin-bottom:5px}
+.pdv{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.pdl{flex:1;height:1px;background:var(--cb)}.pdd{width:4px;height:4px;border-radius:50%;background:rgba(180,130,90,.38)}
+.pt{font-family:'Playfair Display',serif;font-size:36px;font-weight:600;color:var(--brown);line-height:1.05;margin-bottom:3px}
+.ps{font-family:'Allura',cursive;font-size:22px;color:var(--sc);margin-bottom:26px}
+/* INPUTS */
+.sec{margin-bottom:20px}
+.ql{display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--car);margin-bottom:4px}
+textarea{width:100%;background:rgba(255,253,249,.7);border:1px solid var(--cb);border-radius:10px;padding:10px 14px;font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--tx);resize:none;outline:none;min-height:56px;line-height:1.8;transition:border-color .2s}
+textarea::placeholder{color:var(--mu);font-style:italic}
+textarea:focus{border-color:var(--car);background:white}
+.is{width:100%;background:rgba(255,253,249,.7);border:none;border-bottom:1px solid var(--cb);padding:6px 2px 8px;font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--tx);outline:none;line-height:1.8;transition:border-color .2s}
+.is::placeholder{color:var(--mu);font-style:italic}
+.is:focus{border-bottom-color:var(--car)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.g2 .field label{display:block;font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--car);margin-bottom:5px}
+/* STARS */
+.stars{display:flex;gap:8px;margin-top:6px}
+.star{font-size:22px;cursor:pointer;color:var(--cb);transition:color .15s}
+.star.on{color:var(--car)}
+/* MOOD PILLS */
+.mr{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:16px}
+.mb{border:1px solid var(--cb);border-radius:100px;padding:7px 17px;background:transparent;cursor:pointer;font-family:'Cormorant Garamond',serif;font-size:16px;color:#7a4a25;transition:all .15s}
+.mb:hover,.mb.on{background:rgba(201,149,106,.18);border-color:var(--car)}
+/* ICON ROW — for aesthetic ratings */
+.icon-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.icon-btn{border:1px solid var(--cb);border-radius:12px;padding:8px 14px;background:transparent;cursor:pointer;font-family:'Cormorant Garamond',serif;font-size:15px;color:#7a4a25;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:62px}
+.icon-btn span.ico{font-size:20px}
+.icon-btn span.lbl{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mu)}
+.icon-btn:hover,.icon-btn.on{background:rgba(201,149,106,.18);border-color:var(--car)}
+.icon-btn.on span.lbl{color:var(--car)}
+/* GRATITUDE */
+.gi{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}
+.gn{font-family:'Playfair Display',serif;font-size:30px;font-style:italic;color:rgba(201,149,106,.4);flex-shrink:0;line-height:1;margin-top:3px}
+.gta{flex:1;border:none;border-bottom:1px solid var(--cb);background:transparent;font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--tx);padding:4px 2px 8px;outline:none;resize:none;line-height:1.75;min-height:44px}
+.gta:focus{border-bottom-color:var(--car)}
+.gta::placeholder{color:var(--mu);font-style:italic}
+/* AFFIRMATION */
+.ac{background:var(--cs);border:1px solid var(--cb);border-radius:14px;padding:16px 20px;text-align:center;margin-bottom:20px}
+.al{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--car);margin-bottom:6px}
+.at{font-family:'Playfair Display',serif;font-style:italic;font-size:18px;color:var(--brown);line-height:1.5}
+/* PROMISE BOX */
+.pb{border-left:2px solid var(--car);background:var(--cs);border-radius:0 10px 10px 0;padding:12px 16px}
+/* SCALE SLIDER */
+.scale-row{display:flex;align-items:center;gap:12px;margin-top:6px;margin-bottom:4px}
+.scale-label{font-size:13px;color:var(--mu);min-width:36px}
+input[type=range]{flex:1;accent-color:var(--car);height:4px;cursor:pointer}
+.scale-val{font-family:'Playfair Display',serif;font-size:20px;color:var(--car);min-width:28px;text-align:center}
+/* PAGE FOOTER */
+.pf{margin-top:auto;padding-top:16px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(180,130,90,.1);flex-wrap:wrap;gap:8px}
+.fsc{font-family:'Allura',cursive;font-size:16px;color:var(--mu)}
+.fn{font-size:12px;letter-spacing:.08em;color:var(--mu)}
+.print-btn{background:none;border:1px solid var(--cb);border-radius:100px;padding:6px 18px;font-family:'Cormorant Garamond',serif;font-size:13px;letter-spacing:.08em;color:var(--bl);cursor:pointer;text-transform:uppercase;transition:all .2s}
+.print-btn:hover{background:var(--cs);border-color:var(--car)}
+/* CLOSING */
+.closing{align-items:center;justify-content:center;text-align:center;padding-top:72px;padding-bottom:52px}
+.ct{font-family:'Playfair Display',serif;font-size:36px;font-style:italic;color:var(--brown);margin-bottom:8px}
+.csc{font-family:'Allura',cursive;font-size:30px;color:var(--sc);margin-bottom:20px}
+.cb2{font-size:17px;color:var(--bl);line-height:1.8;max-width:380px;margin:0 auto 32px}
+.btn-r{background:none;border:1px solid var(--cb);border-radius:100px;padding:12px 36px;font-family:'Cormorant Garamond',serif;font-size:17px;color:#7a4a25;cursor:pointer;letter-spacing:.08em;text-transform:uppercase;transition:all .2s}
+.btn-r:hover{background:var(--cs)}
+/* NAV */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:18px 44px 26px;border-top:1px solid rgba(180,130,90,.15);position:relative;z-index:10;background:rgba(255,253,249,.96)}
+.nb{background:none;border:1px solid var(--cb);border-radius:100px;padding:9px 22px;font-family:'Cormorant Garamond',serif;font-size:15px;letter-spacing:.07em;color:#7a4a25;cursor:pointer;text-transform:uppercase;transition:all .15s}
+.nb:hover{background:var(--cs);border-color:var(--car)}
+.nb:disabled{opacity:.22;cursor:default;pointer-events:none}
+.dots{display:flex;gap:8px;align-items:center}
+.dot{width:7px;height:7px;border-radius:50%;background:rgba(180,130,90,.22);cursor:pointer;transition:all .2s}
+.dot.on{background:var(--car);transform:scale(1.35)}
+@media print{.nav,.btn-start,.btn-r,.nb,.print-btn{display:none!important}.page{display:flex!important;page-break-after:always;box-shadow:none!important}}
+</style>
+</head>
+<body>
+<div class="journal" id="journal">
+
+<!-- ══ COVER ══ -->
+<div class="page cover active" id="p0">
+<svg class="fl tl" width="160" height="160" viewBox="0 0 155 155" fill="none"><ellipse cx="38" cy="38" r="22" fill="#f5c5a0" opacity=".38"/><ellipse cx="38" cy="14" rx="10" ry="20" fill="#f0b48a" opacity=".42" transform="rotate(-10 38 14)"/><ellipse cx="14" cy="38" rx="10" ry="20" fill="#f0b48a" opacity=".42" transform="rotate(80 14 38)"/><ellipse cx="60" cy="20" rx="9" ry="18" fill="#eda882" opacity=".38" transform="rotate(-45 60 20)"/><ellipse cx="20" cy="60" rx="9" ry="18" fill="#eda882" opacity=".38" transform="rotate(45 20 60)"/><ellipse cx="62" cy="42" rx="8" ry="16" fill="#f5c5a0" opacity=".32" transform="rotate(-70 62 42)"/><ellipse cx="42" cy="62" rx="8" ry="16" fill="#f5c5a0" opacity=".32" transform="rotate(20 42 62)"/><circle cx="38" cy="38" r="9" fill="#c9956a" opacity=".55"/><circle cx="38" cy="38" r="4" fill="#e8b48a" opacity=".7"/><ellipse cx="72" cy="56" rx="6" ry="15" fill="#a8c48a" opacity=".38" transform="rotate(-50 72 56)"/><ellipse cx="56" cy="72" rx="6" ry="15" fill="#a8c48a" opacity=".38" transform="rotate(40 56 72)"/><ellipse cx="88" cy="18" rx="5" ry="10" fill="#f5c5a0" opacity=".3" transform="rotate(-20 88 18)"/><ellipse cx="18" cy="88" rx="4" ry="9" fill="#f5c5a0" opacity=".28" transform="rotate(65 18 88)"/></svg>
+<svg class="fl tr" width="160" height="160" viewBox="0 0 155 155" fill="none"><ellipse cx="117" cy="38" r="22" fill="#f5c5a0" opacity=".38"/><ellipse cx="117" cy="14" rx="10" ry="20" fill="#f0b48a" opacity=".42" transform="rotate(10 117 14)"/><ellipse cx="141" cy="38" rx="10" ry="20" fill="#f0b48a" opacity=".42" transform="rotate(-80 141 38)"/><ellipse cx="95" cy="20" rx="9" ry="18" fill="#eda882" opacity=".38" transform="rotate(45 95 20)"/><ellipse cx="135" cy="60" rx="9" ry="18" fill="#eda882" opacity=".38" transform="rotate(-45 135 60)"/><ellipse cx="93" cy="42" rx="8" ry="16" fill="#f5c5a0" opacity=".32" transform="rotate(70 93 42)"/><ellipse cx="113" cy="62" rx="8" ry="16" fill="#f5c5a0" opacity=".32" transform="rotate(-20 113 62)"/><circle cx="117" cy="38" r="9" fill="#c9956a" opacity=".55"/><circle cx="117" cy="38" r="4" fill="#e8b48a" opacity=".7"/><ellipse cx="83" cy="56" rx="6" ry="15" fill="#a8c48a" opacity=".38" transform="rotate(50 83 56)"/><ellipse cx="99" cy="72" rx="6" ry="15" fill="#a8c48a" opacity=".38" transform="rotate(-40 99 72)"/><ellipse cx="67" cy="18" rx="5" ry="10" fill="#f5c5a0" opacity=".3" transform="rotate(20 67 18)"/><ellipse cx="137" cy="88" rx="4" ry="9" fill="#f5c5a0" opacity=".28" transform="rotate(-65 137 88)"/></svg>
+<svg class="fl bl" width="130" height="130" viewBox="0 0 120 120" fill="none"><ellipse cx="30" cy="96" r="16" fill="#f5c5a0" opacity=".35"/><ellipse cx="30" cy="118" rx="8" ry="16" fill="#eda882" opacity=".35" transform="rotate(5 30 118)"/><ellipse cx="10" cy="82" rx="8" ry="16" fill="#eda882" opacity=".35" transform="rotate(-75 10 82)"/><ellipse cx="52" cy="106" rx="7" ry="13" fill="#f5c5a0" opacity=".28" transform="rotate(30 52 106)"/><circle cx="30" cy="96" r="6" fill="#c9956a" opacity=".5"/><ellipse cx="55" cy="80" rx="5" ry="12" fill="#a8c48a" opacity=".35" transform="rotate(-45 55 80)"/></svg>
+<svg class="fl br" width="130" height="130" viewBox="0 0 120 120" fill="none"><ellipse cx="90" cy="96" r="16" fill="#f5c5a0" opacity=".35"/><ellipse cx="90" cy="118" rx="8" ry="16" fill="#eda882" opacity=".35" transform="rotate(-5 90 118)"/><ellipse cx="110" cy="82" rx="8" ry="16" fill="#eda882" opacity=".35" transform="rotate(75 110 82)"/><ellipse cx="68" cy="106" rx="7" ry="13" fill="#f5c5a0" opacity=".28" transform="rotate(-30 68 106)"/><circle cx="90" cy="96" r="6" fill="#c9956a" opacity=".5"/><ellipse cx="65" cy="80" rx="5" ry="12" fill="#a8c48a" opacity=".35" transform="rotate(45 65 80)"/></svg>
+<svg class="cd" style="left:26px;bottom:110px;opacity:.18" width="46" height="54" viewBox="0 0 48 56" fill="none"><path d="M8 18 Q7 8 24 8 Q41 8 40 18 L37 44 Q36 50 24 50 Q12 50 11 44Z" fill="#c9956a"/><path d="M40 24 Q50 24 50 31 Q50 38 40 38" stroke="#c9956a" stroke-width="2.5" fill="none" stroke-linecap="round"/><ellipse cx="24" cy="18" rx="16" ry="4" fill="#b07a52" opacity=".5"/><path d="M18 4 Q20 0 22 4" stroke="#c9956a" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M24 2 Q26 -2 28 2" stroke="#c9956a" stroke-width="1.5" fill="none" stroke-linecap="round"/><rect x="6" y="50" width="36" height="4" rx="2" fill="#c9956a" opacity=".4"/></svg>
+<svg class="cd" style="right:28px;bottom:120px;opacity:.17" width="48" height="38" viewBox="0 0 52 44" fill="none"><ellipse cx="12" cy="22" rx="9" ry="14" fill="#c9956a" transform="rotate(-20 12 22)"/><path d="M12 9 Q12 22 12 35" stroke="#fffdf9" stroke-width="1.5" stroke-linecap="round" transform="rotate(-20 12 22)"/><ellipse cx="30" cy="14" rx="9" ry="14" fill="#b07a52" transform="rotate(15 30 14)"/><path d="M30 1 Q30 14 30 27" stroke="#fffdf9" stroke-width="1.5" stroke-linecap="round" transform="rotate(15 30 14)"/><ellipse cx="44" cy="28" rx="8" ry="12" fill="#c9956a" transform="rotate(-10 44 28)"/><path d="M44 17 Q44 28 44 39" stroke="#fffdf9" stroke-width="1.5" stroke-linecap="round" transform="rotate(-10 44 28)"/></svg>
+<div class="stamp"><span>Solo<br>☕<br>Date</span></div>
+<div class="dr"><div class="dl"></div><div class="dd"></div><div class="dl"></div></div>
+<h1>Solo Café Date</h1>
+<div class="sc">a moment just for me</div>
+<div class="cpills"><div class="pill">☕ café details</div><div class="pill">🎨 the aesthetic</div><div class="pill">🌿 gratitude</div><div class="pill">🤍 my journal</div></div>
+<div class="cquote">"You don't need company to have<br>a beautiful time with yourself."</div>
+<button class="btn-start" onclick="goTo(1)">Open My Journal</button>
+</div>
+
+<!-- ══ PAGE 1 — MY CAFÉ DATE ══ -->
+<div class="page" id="p1">
+<svg class="fl tr" width="130" height="130" viewBox="0 0 155 155" fill="none" opacity=".9"><ellipse cx="117" cy="38" r="20" fill="#f5c5a0" opacity=".38"/><ellipse cx="117" cy="15" rx="9" ry="18" fill="#f0b48a" opacity=".4" transform="rotate(8 117 15)"/><ellipse cx="140" cy="38" rx="9" ry="18" fill="#f0b48a" opacity=".4" transform="rotate(-78 140 38)"/><ellipse cx="96" cy="22" rx="8" ry="15" fill="#eda882" opacity=".35" transform="rotate(42 96 22)"/><circle cx="117" cy="38" r="8" fill="#c9956a" opacity=".52"/><ellipse cx="84" cy="55" rx="5" ry="13" fill="#a8c48a" opacity=".36" transform="rotate(48 84 55)"/></svg>
+<svg class="cd" style="left:16px;bottom:68px;opacity:.17" width="36" height="44" viewBox="0 0 48 56" fill="none"><path d="M8 18 Q7 8 24 8 Q41 8 40 18 L37 44 Q36 50 24 50 Q12 50 11 44Z" fill="#c9956a"/><path d="M40 24 Q50 24 50 31 Q50 38 40 38" stroke="#c9956a" stroke-width="2.5" fill="none" stroke-linecap="round"/><ellipse cx="24" cy="18" rx="16" ry="4" fill="#b07a52" opacity=".5"/><path d="M18 4 Q20 0 22 4" stroke="#c9956a" stroke-width="1.5" fill="none" stroke-linecap="round"/><rect x="6" y="50" width="36" height="4" rx="2" fill="#c9956a" opacity=".4"/></svg>
+<div class="ey">Page 01 · The café details</div>
+<div class="pdv"><div class="pdl"></div><div class="pdd"></div><div class="pdl"></div></div>
+<div class="pt">My Café Date</div>
+<div class="ps">where I went & what I had ☕</div>
+<div class="g2">
+  <div class="field"><label>Date</label><input class="is" id="cafe-date" type="text" placeholder="dd / mm / yyyy"></div>
+  <div class="field"><label>Time of day</label><input class="is" id="cafe-time" type="text" placeholder="morning · afternoon · evening"></div>
+</div>
+<div class="sec"><span class="ql">café name & location</span><input class="is" id="cafe-name" placeholder="Name of the café..."></div>
+<div class="sec"><span class="ql">what I ordered</span><input class="is" id="cafe-order" placeholder="Oat latte, matcha, croissant..."></div>
+<div class="sec"><span class="ql">how it tasted</span>
+  <div class="mr">
+    <button class="mb" onclick="pm(this,'taste')">amazing 😍</button>
+    <button class="mb" onclick="pm(this,'taste')">pretty good</button>
+    <button class="mb" onclick="pm(this,'taste')">okay</button>
+    <button class="mb" onclick="pm(this,'taste')">not my fave</button>
+    <button class="mb" onclick="pm(this,'taste')">would order again ✓</button>
+  </div>
+</div>
+<div class="sec"><span class="ql">my coffee rating ☕</span>
+  <div class="stars" id="stars"><span class="star" onclick="rs(1)">☕</span><span class="star" onclick="rs(2)">☕</span><span class="star" onclick="rs(3)">☕</span><span class="star" onclick="rs(4)">☕</span><span class="star" onclick="rs(5)">☕</span></div>
+</div>
+<div class="sec"><span class="ql">would I recommend this place?</span>
+  <div class="mr">
+    <button class="mb" onclick="pm(this,'rec')">absolutely 🤍</button>
+    <button class="mb" onclick="pm(this,'rec')">maybe</button>
+    <button class="mb" onclick="pm(this,'rec')">probably not</button>
+  </div>
+</div>
+<div class="pf"><span class="fsc">Solo Café Journal</span><button class="print-btn" onclick="window.print()">🖨 Print</button><span class="fn">— 01 —</span></div>
+</div>
+
+<!-- ══ PAGE 2 — THE EXPERIENCE ══ -->
+<div class="page" id="p2">
+<svg class="fl tl" width="130" height="130" viewBox="0 0 155 155" fill="none" opacity=".9"><ellipse cx="38" cy="38" r="20" fill="#f5c5a0" opacity=".38"/><ellipse cx="38" cy="15" rx="9" ry="18" fill="#f0b48a" opacity=".4" transform="rotate(-8 38 15)"/><ellipse cx="15" cy="38" rx="9" ry="18" fill="#f0b48a" opacity=".4" transform="rotate(82 15 38)"/><ellipse cx="59" cy="22" rx="8" ry="15" fill="#eda882" opacity=".35" transform="rotate(-42 59 22)"/><circle cx="38" cy="38" r="8" fill="#c9956a" opacity=".52"/><ellipse cx="71" cy="55" rx="5" ry="13" fill="#a8c48a" opacity=".36" transform="rotate(-48 71 55)"/></svg>
+<svg class="cd" style="right:18px;bottom:72px;opacity:.16" width="42" height="34" viewBox="0 0 52 44" fill="none"><ellipse cx="12" cy="22" rx="9" ry="14" fill="#c9956a" transform="rotate(-20 12 22)"/><path d="M12 9 Q12 22 12 35" stroke="#fffdf9" stroke-width="1.5" stroke-linecap="round" transform="rotate(-20 12 22)"/><ellipse cx="30" cy="14" rx="9" ry="14" fill="#b07a52" transform="rotate(15 30 14)"/><path d="M30 1 Q30 14 30 27" stroke="#fffdf9" stroke-width="1.5" stroke-linecap="round" transform="rotate(15 30 14)"/><ellipse cx="44" cy="28" rx="8" ry="12" fill="#c9956a" transform="rotate(-10 44 28)"/><path d="M44 17 Q44 28 44 39" stroke="#fffdf9" stroke-width="1.5" stroke-linecap="round" transform="rotate(-10 44 28)"/></svg>
+<div class="ey">Page 02 · The experience</div>
+<div class="pdv"><div class="pdl"></div><div class="pdd"></div><div class="pdl"></div></div>
+<div class="pt">The Experience</div>
+<div class="ps">what made this place special 🎨</div>
+<div class="sec"><span class="ql">the overall vibe</span>
+  <div class="mr">
+    <button class="mb" onclick="pm(this,'vibe')">cosy & warm</button>
+    <button class="mb" onclick="pm(this,'vibe')">bright & airy</button>
+    <button class="mb" onclick="pm(this,'vibe')">moody & dark</button>
+    <button class="mb" onclick="pm(this,'vibe')">minimal & clean</button>
+    <button class="mb" onclick="pm(this,'vibe')">busy & lively</button>
+    <button class="mb" onclick="pm(this,'vibe')">quiet & calm</button>
+  </div>
+</div>
+<div class="sec"><span class="ql">rate the details</span>
+  <div class="icon-row">
+    <button class="icon-btn" onclick="tog(this,'dec')"><span class="ico">🪴</span><span class="lbl">Décor</span></button>
+    <button class="icon-btn" onclick="tog(this,'mus')"><span class="ico">🎵</span><span class="lbl">Music</span></button>
+    <button class="icon-btn" onclick="tog(this,'lig')"><span class="ico">💡</span><span class="lbl">Lighting</span></button>
+    <button class="icon-btn" onclick="tog(this,'sea')"><span class="ico">🪑</span><span class="lbl">Seating</span></button>
+    <button class="icon-btn" onclick="tog(this,'spe')"><span class="ico">✨</span><span class="lbl">Special</span></button>
+    <button class="icon-btn" onclick="tog(this,'ins')"><span class="ico">📸</span><span class="lbl">Instagrammable</span></button>
+  </div>
+</div>
+<div class="sec"><span class="ql">how busy was it?</span>
+  <div class="scale-row">
+    <span class="scale-label">Empty</span>
+    <input type="range" id="busy-scale" min="1" max="5" value="3" oninput="updateScale(this,'busy-val')">
+    <span class="scale-val" id="busy-val">3</span>
+    <span class="scale-label">Packed</span>
+  </div>
+</div>
+<div class="sec"><span class="ql">the music playlist felt like</span><input class="is" id="music-feel" placeholder="Soft jazz, indie pop, lofi beats..."></div>
+<div class="sec"><span class="ql">one detail I noticed & loved</span><textarea id="detail-loved" placeholder="A little thing that caught my eye..."></textarea></div>
+<div class="pf"><span class="fsc">Solo Café Journal</span><button class="print-btn" onclick="window.print()">🖨 Print</button><span class="fn">— 02 —</span></div>
+</div>
+
+<!-- ══ PAGE 3 — IN THIS MOMENT ══ -->
+<div class="page" id="p3">
+<svg class="fl tr" width="130" height="130" viewBox="0 0 155 155" fill="none" opacity=".9"><ellipse cx="117" cy="38" r="20" fill="#f5c5a0" opacity=".38"/><ellipse cx="117" cy="15" rx="9" ry="18" fill="#f0b48a" opacity=".4" transform="rotate(8 117 15)"/><ellipse cx="140" cy="38" rx="9" ry="18" fill="#f0b48a" opacity=".4" transform="rotate(-78 140 38)"/><circle cx="117" cy="38" r="8" fill="#c9956a" opacity=".52"/><ellipse cx="84" cy="55" rx="5" ry="13" fill="#a8c48a" opacity=".36" transform="rotate(48 84 55)"/><ellipse cx="96" cy="22" rx="8" ry="15" fill="#eda882" opacity=".35" transform="rotate(42 96 22)"/></svg>
+<svg class="cd" style="left:16px;bottom:66px;opacity:.17" width="40" height="50" viewBox="0 0 44 52" fill="none"><path d="M22 50 Q22 10 22 4" stroke="#a8c48a" stroke-width="2" stroke-linecap="round"/><ellipse cx="14" cy="22" rx="10" ry="16" fill="#a8c48a" transform="rotate(-30 14 22)"/><ellipse cx="30" cy="32" rx="10" ry="16" fill="#b5c99a" transform="rotate(30 30 32)"/><ellipse cx="10" cy="38" rx="8" ry="12" fill="#a8c48a" opacity=".7" transform="rotate(-20 10 38)"/></svg>
+<div class="ey">Page 03 · Setting the scene</div>
+<div class="pdv"><div class="pdl"></div><div class="pdd"></div><div class="pdl"></div></div>
+<div class="pt">In This Moment</div>
+<div class="ps">a little snapshot of right now 📸</div>
+<div class="g2">
+  <div class="field"><label>The weather today</label><input class="is" id="weather" placeholder="Sunny, rainy, cloudy..."></div>
+  <div class="field"><label>What I'm wearing</label><input class="is" id="outfit" placeholder="My outfit today..."></div>
+</div>
+<div class="sec"><span class="ql">what I brought with me</span>
+  <div class="icon-row">
+    <button class="icon-btn" onclick="tog(this,'bk')"><span class="ico">📖</span><span class="lbl">A book</span></button>
+    <button class="icon-btn" onclick="tog(this,'jn')"><span class="ico">📓</span><span class="lbl">Journal</span></button>
+    <button class="icon-btn" onclick="tog(this,'lp')"><span class="ico">💻</span><span class="lbl">Laptop</span></button>
+    <button class="icon-btn" onclick="tog(this,'hp')"><span class="ico">🎧</span><span class="lbl">Headphones</span></button>
+    <button class="icon-btn" onclick="tog(this,'nt')"><span class="ico">✏️</span><span class="lbl">Nothing</span></button>
+  </div>
+</div>
+<div class="sec"><span class="ql">the view from my seat</span><textarea id="view" placeholder="What can I see from here?"></textarea></div>
+<div class="sec"><span class="ql">something small I noticed around me</span><textarea id="noticed" placeholder="A little detail, a moment, a person..."></textarea></div>
+<div class="sec"><span class="ql">the energy in this place right now</span><input class="is" id="energy" placeholder="Calm, creative, warm, nostalgic..."></div>
+<div class="pf"><span class="fsc">Solo Café Journal</span><button class="print-btn" onclick="window.print()">🖨 Print</button><span class="fn">— 03 —</span></div>
+</div>
+
+<!-- ══ PAGE 4 — GRATITUDE ══ -->
+<div class="page" id="p4">
+<svg class="fl tl" width="130" height="130" viewBox="0 0 155 155" fill="none" opacity=".9"><ellipse cx="38" cy="38" r="20" fill="#f5c5a0" opacity=".38"/><ellipse cx="38" cy="15" rx="9" ry="18" fill="#f0b48a" opacity=".4" transform="rotate(-8 38 15)"/><ellipse cx="15" cy="38" rx="9" ry="18" fill="#f0b48a" opacity=".4" transform="rotate(82 15 38)"/><circle cx="38" cy="38" r="8" fill="#c9956a" opacity=".52"/><ellipse cx="71" cy="55" rx="5" ry="13" fill="#a8c48a" opacity=".36" transform="rotate(-48 71 55)"/><ellipse cx="59" cy="22" rx="8" ry="15" fill="#eda882" opacity=".35" transform="rotate(-42 59 22)"/></svg>
+<svg class="cd" style="right:18px;bottom:72px;opacity:.16" width="42" height="34" viewBox="0 0 52 44" fill="none"><ellipse cx="12" cy="22" rx="9" ry="14" fill="#c9956a" transform="rotate(-20 12 22)"/><path d="M12 9 Q12 22 12 35" stroke="#fffdf9" stroke-width="1.5" stroke-linecap="round" transform="rotate(-20 12 22)"/><ellipse cx="30" cy="14" rx="9" ry="14" fill="#b07a52" transform="rotate(15 30 14)"/><path d="M30 1 Q30 14 30 27" stroke="#fffdf9" stroke-width="1.5" stroke-linecap="round" transform="rotate(15 30 14)"/><ellipse cx="44" cy="28" rx="8" ry="12" fill="#c9956a" transform="rotate(-10 44 28)"/><path d="M44 17 Q44 28 44 39" stroke="#fffdf9" stroke-width="1.5" stroke-linecap="round" transform="rotate(-10 44 28)"/></svg>
+<div class="ey">Page 04 · Counting blessings</div>
+<div class="pdv"><div class="pdl"></div><div class="pdd"></div><div class="pdl"></div></div>
+<div class="pt">Gratitude</div>
+<div class="ps">the little things matter most 🌿</div>
+<div class="ac"><div class="al">today's affirmation</div><div class="at" id="affirm-text">"I am grateful for where I am,<br>and excited for where I'm going."</div></div>
+<div class="sec">
+  <span class="ql">three things I'm grateful for today</span>
+  <div class="gi"><span class="gn">1</span><textarea class="gta" id="grat1" placeholder="I'm grateful for..."></textarea></div>
+  <div class="gi"><span class="gn">2</span><textarea class="gta" id="grat2" placeholder="I'm grateful for..."></textarea></div>
+  <div class="gi"><span class="gn">3</span><textarea class="gta" id="grat3" placeholder="I'm grateful for..."></textarea></div>
+</div>
+<div class="sec"><span class="ql">something about this café I'm grateful for right now</span><textarea id="cafe-grat" placeholder="This place gives me..."></textarea></div>
+<div class="pf"><span class="fsc">Solo Café Journal</span><button class="print-btn" onclick="window.print()">🖨 Print</button><span class="fn">— 04 —</span></div>
+</div>
+
+<!-- ══ PAGE 5 — MY LITTLE JOURNAL ══ -->
+<div class="page" id="p5">
+<svg class="fl tr" width="130" height="130" viewBox="0 0 155 155" fill="none" opacity=".9"><ellipse cx="117" cy="38" r="20" fill="#f5c5a0" opacity=".38"/><ellipse cx="117" cy="15" rx="9" ry="18" fill="#f0b48a" opacity=".4" transform="rotate(8 117 15)"/><ellipse cx="140" cy="38" rx="9" ry="18" fill="#f0b48a" opacity=".4" transform="rotate(-78 140 38)"/><circle cx="117" cy="38" r="8" fill="#c9956a" opacity=".52"/><ellipse cx="84" cy="55" rx="5" ry="13" fill="#a8c48a" opacity=".36" transform="rotate(48 84 55)"/><ellipse cx="96" cy="22" rx="8" ry="15" fill="#eda882" opacity=".35" transform="rotate(42 96 22)"/></svg>
+<svg class="fl bl" width="110" height="110" viewBox="0 0 120 120" fill="none" opacity=".8"><ellipse cx="30" cy="96" r="15" fill="#f5c5a0" opacity=".35"/><ellipse cx="30" cy="116" rx="7" ry="14" fill="#eda882" opacity=".33" transform="rotate(5 30 116)"/><ellipse cx="12" cy="82" rx="7" ry="14" fill="#eda882" opacity=".33" transform="rotate(-73 12 82)"/><circle cx="30" cy="96" r="5" fill="#c9956a" opacity=".48"/><ellipse cx="52" cy="80" rx="5" ry="11" fill="#a8c48a" opacity=".33" transform="rotate(-43 52 80)"/></svg>
+<div class="ey">Page 05 · A little journal moment</div>
+<div class="pdv"><div class="pdl"></div><div class="pdd"></div><div class="pdl"></div></div>
+<div class="pt">My Little Journal</div>
+<div class="ps">just a little bit, just for me 🤍</div>
+<div class="sec"><span class="ql">one thing I'm proud of this week</span><textarea id="proud" placeholder="Something I did, big or small..."></textarea></div>
+<div class="sec"><span class="ql">something I'm looking forward to</span><textarea id="forward" placeholder="I'm excited about..."></textarea></div>
+<div class="sec"><span class="ql">one promise to myself today</span><div class="pb"><textarea id="promise" placeholder="I promise myself..."></textarea></div></div>
+<div class="sec"><span class="ql">my word for today</span><input class="is" id="word" placeholder="One word to carry with me..."></div>
+<div class="pf"><span class="fsc">Solo Café Journal</span><button class="print-btn" onclick="window.print()">🖨 Print</button><span class="fn">— 05 —</span></div>
+</div>
+
+<!-- ══ CLOSING ══ -->
+<div class="page closing" id="p6">
+<svg class="fl tl" width="150" height="150" viewBox="0 0 155 155" fill="none"><ellipse cx="38" cy="38" r="22" fill="#f5c5a0" opacity=".38"/><ellipse cx="38" cy="14" rx="10" ry="20" fill="#f0b48a" opacity=".42" transform="rotate(-10 38 14)"/><ellipse cx="14" cy="38" rx="10" ry="20" fill="#f0b48a" opacity=".42" transform="rotate(80 14 38)"/><ellipse cx="60" cy="20" rx="9" ry="18" fill="#eda882" opacity=".38" transform="rotate(-45 60 20)"/><ellipse cx="20" cy="60" rx="9" ry="18" fill="#eda882" opacity=".38" transform="rotate(45 20 60)"/><circle cx="38" cy="38" r="9" fill="#c9956a" opacity=".55"/><ellipse cx="72" cy="56" rx="6" ry="15" fill="#a8c48a" opacity=".38" transform="rotate(-50 72 56)"/><ellipse cx="56" cy="72" rx="6" ry="15" fill="#a8c48a" opacity=".38" transform="rotate(40 56 72)"/></svg>
+<svg class="fl br" width="150" height="150" viewBox="0 0 120 120" fill="none"><ellipse cx="90" cy="90" r="18" fill="#f5c5a0" opacity=".38"/><ellipse cx="90" cy="114" rx="9" ry="17" fill="#eda882" opacity=".35" transform="rotate(-5 90 114)"/><ellipse cx="112" cy="76" rx="9" ry="17" fill="#eda882" opacity=".35" transform="rotate(72 112 76)"/><ellipse cx="68" cy="108" rx="7" ry="14" fill="#f5c5a0" opacity=".28" transform="rotate(-28 68 108)"/><circle cx="90" cy="90" r="7" fill="#c9956a" opacity=".52"/><ellipse cx="64" cy="76" rx="5" ry="13" fill="#a8c48a" opacity=".35" transform="rotate(48 64 76)"/></svg>
+<svg style="opacity:.13;margin-bottom:18px;position:relative;z-index:2" width="60" height="70" viewBox="0 0 48 56" fill="none"><path d="M8 18 Q7 8 24 8 Q41 8 40 18 L37 44 Q36 50 24 50 Q12 50 11 44Z" fill="#c9956a"/><path d="M40 24 Q50 24 50 31 Q50 38 40 38" stroke="#c9956a" stroke-width="2.5" fill="none" stroke-linecap="round"/><ellipse cx="24" cy="18" rx="16" ry="4" fill="#b07a52" opacity=".5"/><path d="M18 4 Q20 0 22 4" stroke="#c9956a" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M24 2 Q26 -2 28 2" stroke="#c9956a" stroke-width="1.5" fill="none" stroke-linecap="round"/><rect x="6" y="50" width="36" height="4" rx="2" fill="#c9956a" opacity=".4"/></svg>
+<div class="dr" style="width:55%;margin-bottom:20px;"><div class="dl"></div><div class="dd"></div><div class="dl"></div></div>
+<div class="ct">You showed up for yourself.</div>
+<div class="csc">that's everything.</div>
+<p class="cb2">This moment — just you, your drink, and your thoughts — is an act of love. Come back whenever you need it. ☕🌸</p>
+<button class="btn-r" onclick="goTo(0)">Start a new entry</button>
+<div style="margin-top:34px;font-family:'Allura',cursive;font-size:20px;color:rgba(180,130,90,.35)">Solo Café Journal</div>
+</div>
+
+<!-- NAV -->
+<div class="nav" id="nav">
+  <button class="nb" id="btnP" onclick="prev()">← Back</button>
+  <div class="dots" id="dots"></div>
+  <button class="nb" id="btnN" onclick="next()">Next →</button>
+</div>
+</div>
+
+<script>
+const N=7;let c=0;
+const affirms=["I am grateful for where I am, and excited for where I'm going.","I deserve this moment of peace and beauty.","Choosing myself today is an act of love.","I am exactly where I need to be right now.","Small moments of joy add up to a beautiful life.","I am allowed to rest, reflect and just be.","Today I choose to be present and at peace."];
+function bd(){const d=document.getElementById('dots');d.innerHTML='';for(let i=0;i<N;i++){const x=document.createElement('div');x.className='dot'+(i===c?' on':'');x.onclick=()=>goTo(i);d.appendChild(x)}}
+function goTo(n){document.getElementById('p'+c).classList.remove('active');c=n;document.getElementById('p'+c).classList.add('active');document.getElementById('btnP').disabled=c<=1;document.getElementById('btnN').disabled=c===N-1;document.getElementById('nav').style.display=c===0?'none':'flex';bd();window.scrollTo({top:0,behavior:'smooth'})}
+function next(){if(c<N-1)goTo(c+1)}
+function prev(){if(c>1)goTo(c-1)}
+function pm(btn,g){document.querySelectorAll('[onclick*="pm(this,\''+g+'\')"]').forEach(b=>b.classList.remove('on'));btn.classList.add('on');localStorage.setItem('scj_m_'+g,btn.textContent)}
+function tog(btn,k){btn.classList.toggle('on');localStorage.setItem('scj_t_'+k,btn.classList.contains('on')?'1':'')}
+function rs(n){document.querySelectorAll('.star').forEach((s,i)=>s.classList.toggle('on',i<n));localStorage.setItem('scj_stars',n)}
+function updateScale(el,valId){document.getElementById(valId).textContent=el.value;localStorage.setItem('scj_'+el.id,el.value)}
+// set random affirmation
+const ai=Math.floor(Math.random()*affirms.length);document.getElementById('affirm-text').innerHTML='"'+affirms[ai]+'"';
+// save/restore
+document.querySelectorAll('textarea,.gta,input.is').forEach(el=>{if(!el.id)return;const v=localStorage.getItem('scj_'+el.id);if(v)el.value=v;el.addEventListener('input',()=>{localStorage.setItem('scj_'+el.id,el.value);if(el.tagName==='TEXTAREA'){el.style.height='auto';el.style.height=el.scrollHeight+'px'}})});
+['taste','rec','vibe','mood'].forEach(g=>{const s=localStorage.getItem('scj_m_'+g);if(s)document.querySelectorAll('[onclick*="pm(this,\''+g+'\')"]').forEach(b=>{if(b.textContent===s)b.classList.add('on')})});
+['dec','mus','lig','sea','spe','ins','bk','jn','lp','hp','nt'].forEach(k=>{if(localStorage.getItem('scj_t_'+k)==='1'){const b=document.querySelector('[onclick*="tog(this,\''+k+'\')"]');if(b)b.classList.add('on')}});
+const ss=localStorage.getItem('scj_stars');if(ss)rs(parseInt(ss));
+const bsv=localStorage.getItem('scj_busy-scale');if(bsv){document.getElementById('busy-scale').value=bsv;document.getElementById('busy-val').textContent=bsv}
+goTo(0);
+</script>
+</body>
+</html>

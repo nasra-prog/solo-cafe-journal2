@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solo Café Journal — A moment just for me</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Allura&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--cream:#fffdf9;--brown:#5c4033;--bl:#8a6040;--car:#c9a46b;--cs:rgba(201,149,106,.11);--cb:rgba(201,149,106,.36);--sc:#b38b6d;--tx:#3d2b1a;--mu:rgba(180,130,90,.42)}
+html{scroll-behavior:smooth}
+body{background:linear-gradient(to bottom,#f8f3ed,#efe3d3);font-family:'Cormorant Garamond',serif;color:var(--tx)}
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle,rgba(180,130,90,.15) 1px,transparent 1px);background-size:22px 22px;pointer-events:none;z-index:0}
+nav{position:sticky;top:0;z-index:100;background:rgba(255,253,249,.93);backdrop-filter:blur(12px);border-bottom:1px solid var(--cb);padding:16px 40px;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:'Allura',cursive;font-size:28px;color:var(--sc);text-decoration:none}
+.nav-links{display:flex;gap:28px;align-items:center}
+.nav-links a{font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--bl);text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:var(--car)}
+.nav-cta{background:var(--car)!important;color:white!important;border-radius:100px;padding:9px 24px!important;letter-spacing:.1em!important;transition:background .2s!important}
+.nav-cta:hover{background:#b07a52!important}
+section{position:relative;z-index:1}
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:100px 24px 80px;position:relative;overflow:hidden}
+.hfl{position:absolute;pointer-events:none}
+.hfl.tl{top:-10px;left:-10px}.hfl.tr{top:-10px;right:-10px}.hfl.bl{bottom:-10px;left:-10px}.hfl.br{bottom:-10px;right:-10px}
+.hcd{position:absolute;pointer-events:none}
+.stamp{width:80px;height:80px;border:1.5px solid var(--car);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;opacity:.55;margin:0 auto 30px;animation:fadeUp .8s ease both}
+.stamp span{font-size:12px;color:var(--car);letter-spacing:.07em;text-transform:uppercase;line-height:1.6}
+.dr{display:flex;align-items:center;gap:14px;width:min(480px,78%);margin:0 auto 20px;animation:fadeUp .8s .1s ease both}
+.dl{flex:1;height:1px;background:var(--cb)}.dd{width:5px;height:5px;border-radius:50%;background:rgba(180,130,90,.38)}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(48px,8vw,84px);font-weight:600;color:var(--brown);line-height:1.0;letter-spacing:-.02em;margin-bottom:8px;animation:fadeUp .8s .15s ease both}
+.hero-sc{font-family:'Allura',cursive;font-size:clamp(26px,4vw,42px);color:var(--sc);margin-bottom:32px;animation:fadeUp .8s .2s ease both}
+.hero-sub{font-size:clamp(16px,2vw,20px);color:var(--bl);line-height:1.75;max-width:500px;margin:0 auto 16px;animation:fadeUp .8s .25s ease both}
+.free-badge{display:inline-block;background:var(--cs);border:1px solid var(--cb);border-radius:100px;padding:7px 22px;font-size:15px;color:#7a4a25;letter-spacing:.06em;margin-bottom:36px;animation:fadeUp .8s .28s ease both}
+.hero-btns{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;animation:fadeUp .8s .3s ease both}
+.btn-p{background:var(--car);color:white;border:none;border-radius:100px;padding:15px 42px;font-family:'Cormorant Garamond',serif;font-size:18px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:background .2s,transform .1s;display:inline-block}
+.btn-p:hover{background:#b07a52;transform:translateY(-1px)}
+.btn-s{background:none;color:var(--brown);border:1.5px solid var(--cb);border-radius:100px;padding:15px 42px;font-family:'Cormorant Garamond',serif;font-size:18px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:all .2s;display:inline-block}
+.btn-s:hover{background:var(--cs);border-color:var(--car)}
+.scroll-hint{margin-top:56px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--mu);animation:fadeUp .8s .45s ease both}
+.scroll-line{width:1px;height:38px;background:var(--cb);margin:10px auto 0;animation:scrollPulse 2s infinite}
+/* WHAT */
+.what{padding:96px 24px;display:flex;flex-direction:column;align-items:center}
+.sec-tag{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--car);margin-bottom:10px;text-align:center}
+.sec-title{font-family:'Playfair Display',serif;font-size:clamp(30px,4vw,46px);font-weight:600;color:var(--brown);text-align:center;margin-bottom:6px}
+.sec-sc{font-family:'Allura',cursive;font-size:26px;color:var(--sc);text-align:center;margin-bottom:48px}
+.sec-div{display:flex;align-items:center;gap:12px;width:min(380px,70%);margin:0 auto 48px}
+.sdl{flex:1;height:1px;background:var(--cb)}.sdd{width:4px;height:4px;border-radius:50%;background:rgba(180,130,90,.4)}
+.what-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px;width:100%;max-width:860px}
+.wcard{background:white;border:1px solid #f0dcc8;border-radius:18px;padding:30px 28px;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s}
+.wcard:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(140,80,30,.1)}
+.wcard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--car),#e8b48a);opacity:.65}
+.card-icon{font-size:30px;margin-bottom:12px}
+.card-title{font-family:'Playfair Display',serif;font-size:21px;color:var(--brown);margin-bottom:7px}
+.card-text{font-size:16px;color:var(--bl);line-height:1.7}
+/* PAGES PREVIEW */
+.pages{padding:96px 24px;background:white;display:flex;flex-direction:column;align-items:center}
+.pages-list{display:flex;flex-direction:column;width:100%;max-width:660px}
+.pitem{display:flex;align-items:flex-start;gap:22px;padding:26px 0;border-bottom:1px solid rgba(180,130,90,.13);opacity:0;transform:translateY(14px);transition:opacity .5s,transform .5s}
+.pitem.vis{opacity:1;transform:translateY(0)}
+.pitem:last-child{border-bottom:none}
+.pnum{font-family:'Playfair Display',serif;font-size:50px;font-style:italic;color:rgba(201,149,106,.28);flex-shrink:0;line-height:1;width:50px;text-align:center}
+.pinfo{flex:1;padding-top:5px}
+.pinfo-title{font-family:'Playfair Display',serif;font-size:22px;color:var(--brown);margin-bottom:3px}
+.pinfo-sc{font-family:'Allura',cursive;font-size:18px;color:var(--sc);margin-bottom:7px}
+.pinfo-text{font-size:15px;color:var(--bl);line-height:1.65}
+.ptags{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.ptag{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--car);background:var(--cs);border-radius:100px;padding:4px 12px}
+/* HOW IT WORKS */
+.how{padding:96px 24px;display:flex;flex-direction:column;align-items:center}
+.steps{display:flex;flex-direction:column;gap:0;width:100%;max-width:560px;margin-top:8px}
+.step{display:flex;align-items:flex-start;gap:24px;padding:28px 0;border-bottom:1px solid rgba(180,130,90,.13)}
+.step:last-child{border-bottom:none}
+.step-num{font-family:'Playfair Display',serif;font-size:48px;font-style:italic;color:rgba(201,149,106,.3);flex-shrink:0;line-height:1;width:48px;text-align:center}
+.step-info{flex:1;padding-top:6px}
+.step-title{font-family:'Playfair Display',serif;font-size:21px;color:var(--brown);margin-bottom:5px}
+.step-text{font-size:16px;color:var(--bl);line-height:1.7}
+/* CTA BOTTOM */
+.cta-bottom{padding:96px 24px;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;overflow:hidden}
+.cta-bottom-title{font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,44px);font-style:italic;color:var(--brown);margin-bottom:10px}
+.cta-bottom-sc{font-family:'Allura',cursive;font-size:30px;color:var(--sc);margin-bottom:28px}
+.cta-bottom-text{font-size:18px;color:var(--bl);line-height:1.75;max-width:440px;margin:0 auto 36px}
+/* QUOTE */
+.quote-sec{padding:76px 24px;background:rgba(201,149,106,.07);display:flex;flex-direction:column;align-items:center;text-align:center}
+.big-q{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(20px,2.8vw,32px);color:var(--brown);line-height:1.65;max-width:620px;margin-bottom:18px}
+.big-q-attr{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--mu)}
+/* FOOTER */
+footer{padding:50px 24px 34px;border-top:1px solid rgba(180,130,90,.18);display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;position:relative;z-index:1}
+.foot-logo{font-family:'Allura',cursive;font-size:34px;color:var(--sc)}
+.foot-text{font-size:14px;color:var(--mu);letter-spacing:.06em}
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+@keyframes scrollPulse{0%,100%{opacity:.3}50%{opacity:.8}}
+@media(max-width:600px){nav{padding:14px 20px}.nav-links{display:none}.hero{padding:80px 20px 56px}.what,.pages,.how,.cta-bottom{padding:68px 18px}.hero-btns{flex-direction:column;align-items:center}.btn-p,.btn-s{width:100%;max-width:300px;text-align:center}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="#">Solo Café Journal</a>
+  <div class="nav-links">
+    <a href="#what">About</a>
+    <a href="#pages">Inside</a>
+    <a href="#how">How it works</a>
+    <a href="solo-cafe-journal.html" class="nav-cta">Open Journal ☕</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <svg class="hfl tl" width="200" height="200" viewBox="0 0 155 155" fill="none"><ellipse cx="38" cy="38" r="22" fill="#f5c5a0" opacity=".35"/><ellipse cx="38" cy="14" rx="10" ry="20" fill="#f0b48a" opacity=".4" transform="rotate(-10 38 14)"/><ellipse cx="14" cy="38" rx="10" ry="20" fill="#f0b48a" opacity=".4" transform="rotate(80 14 38)"/><ellipse cx="60" cy="20" rx="9" ry="18" fill="#eda882" opacity=".35" transform="rotate(-45 60 20)"/><ellipse cx="20" cy="60" rx="9" ry="18" fill="#eda882" opacity=".35" transform="rotate(45 20 60)"/><circle cx="38" cy="38" r="9" fill="#c9956a" opacity=".52"/><ellipse cx="72" cy="56" rx="6" ry="15" fill="#a8c48a" opacity=".36" transform="rotate(-50 72 56)"/><ellipse cx="56" cy="72" rx="6" ry="15" fill="#a8c48a" opacity=".36" transform="rotate(40 56 72)"/></svg>
+  <svg class="hfl tr" width="200" height="200" viewBox="0 0 155 155" fill="none"><ellipse cx="117" cy="38" r="22" fill="#f5c5a0" opacity=".35"/><ellipse cx="117" cy="14" rx="10" ry="20" fill="#f0b48a" opacity=".4" transform="rotate(10 117 14)"/><ellipse cx="141" cy="38" rx="10" ry="20" fill="#f0b48a" opacity=".4" transform="rotate(-80 141 38)"/><ellipse cx="95" cy="20" rx="9" ry="18" fill="#eda882" opacity=".35" transform="rotate(45 95 20)"/><circle cx="117" cy="38" r="9" fill="#c9956a" opacity=".52"/><ellipse cx="83" cy="56" rx="6" ry="15" fill="#a8c48a" opacity=".36" transform="rotate(50 83 56)"/></svg>
+  <svg class="hfl bl" width="160" height="160" viewBox="0 0 120 120" fill="none"><ellipse cx="30" cy="96" r="16" fill="#f5c5a0" opacity=".32"/><ellipse cx="30" cy="118" rx="8" ry="16" fill="#eda882" opacity=".32" transform="rotate(5 30 118)"/><ellipse cx="10" cy="82" rx="8" ry="16" fill="#eda882" opacity=".32" transform="rotate(-75 10 82)"/><circle cx="30" cy="96" r="6" fill="#c9956a" opacity=".45"/><ellipse cx="55" cy="80" rx="5" ry="12" fill="#a8c48a" opacity=".32" transform="rotate(-45 55 80)"/></svg>
+  <svg class="hfl br" width="160" height="160" viewBox="0 0 120 120" fill="none"><ellipse cx="90" cy="96" r="16" fill="#f5c5a0" opacity=".32"/><ellipse cx="90" cy="118" rx="8" ry="16" fill="#eda882" opacity=".32" transform="rotate(-5 90 118)"/><ellipse cx="110" cy="82" rx="8" ry="16" fill="#eda882" opacity=".32" transform="rotate(75 110 82)"/><circle cx="90" cy="96" r="6" fill="#c9956a" opacity=".45"/><ellipse cx="65" cy="80" rx="5" ry="12" fill="#a8c48a" opacity=".32" transform="rotate(45 65 80)"/></svg>
+  <svg class="hcd" style="left:5%;top:36%;opacity:.13" width="52" height="62" viewBox="0 0 48 56" fill="none"><path d="M8 18 Q7 8 24 8 Q41 8 40 18 L37 44 Q36 50 24 50 Q12 50 11 44Z" fill="#c9956a"/><path d="M40 24 Q50 24 50 31 Q50 38 40 38" stroke="#c9956a" stroke-width="2.5" fill="none" stroke-linecap="round"/><ellipse cx="24" cy="18" rx="16" ry="4" fill="#b07a52" opacity=".5"/><path d="M18 4 Q20 0 22 4" stroke="#c9956a" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M24 2 Q26 -2 28 2" stroke="#c9956a" stroke-width="1.5" fill="none" stroke-linecap="round"/><rect x="6" y="50" width="36" height="4" rx="2" fill="#c9956a" opacity=".4"/></svg>
+  <svg class="hcd" style="right:6%;top:40%;opacity:.12" width="52" height="42" viewBox="0 0 52 44" fill="none"><ellipse cx="12" cy="22" rx="9" ry="14" fill="#c9956a" transform="rotate(-20 12 22)"/><path d="M12 9 Q12 22 12 35" stroke="#fffdf9" stroke-width="1.5" stroke-linecap="round" transform="rotate(-20 12 22)"/><ellipse cx="30" cy="14" rx="9" ry="14" fill="#b07a52" transform="rotate(15 30 14)"/><path d="M30 1 Q30 14 30 27" stroke="#fffdf9" stroke-width="1.5" stroke-linecap="round" transform="rotate(15 30 14)"/><ellipse cx="44" cy="28" rx="8" ry="12" fill="#c9956a" transform="rotate(-10 44 28)"/><path d="M44 17 Q44 28 44 39" stroke="#fffdf9" stroke-width="1.5" stroke-linecap="round" transform="rotate(-10 44 28)"/></svg>
+
+  <div class="stamp"><span>Solo<br>☕<br>Date</span></div>
+  <div class="dr"><div class="dl"></div><div class="dd"></div><div class="dl"></div></div>
+  <h1>Solo Café Date</h1>
+  <div class="hero-sc">a moment just for me</div>
+  <p class="hero-sub">A beautiful free journal for your solo café dates. Log where you went, reflect, be grateful — all in one pretty place.</p>
+  <div class="free-badge">✨ completely free — no sign up needed</div>
+  <div class="hero-btns">
+    <a href="solo-cafe-journal.html" class="btn-p">Open the Free Journal ☕</a>
+    <a href="#pages" class="btn-s">See what's inside</a>
+  </div>
+  <div class="scroll-hint">scroll to explore<div class="scroll-line"></div></div>
+</section>
+
+<!-- WHAT IS IT -->
+<section class="what" id="what">
+  <div class="sec-tag">What is it?</div>
+  <h2 class="sec-title">Made for your solo café ritual</h2>
+  <div class="sec-sc">just you, your drink & your thoughts</div>
+  <div class="sec-div"><div class="sdl"></div><div class="sdd"></div><div class="sdl"></div></div>
+  <div class="what-grid">
+    <div class="wcard"><div class="card-icon">☕</div><div class="card-title">Log your café visits</div><p class="card-text">Record where you went, what you ordered, the vibe of the place and your coffee rating.</p></div>
+    <div class="wcard"><div class="card-icon">🌸</div><div class="card-title">Check in with yourself</div><p class="card-text">Pick your mood, write about why you chose today, and savour one small thing that made you smile.</p></div>
+    <div class="wcard"><div class="card-icon">🌿</div><div class="card-title">Gratitude & affirmations</div><p class="card-text">A daily affirmation card, three gratitude prompts, and space to appreciate this exact moment.</p></div>
+    <div class="wcard"><div class="card-icon">✨</div><div class="card-title">Set intentions</div><p class="card-text">How you want to feel leaving, one kind act for yourself, and your word for the day.</p></div>
+    <div class="wcard"><div class="card-icon">📱</div><div class="card-title">Use it anywhere</div><p class="card-text">Open it on your phone or laptop in any browser. Or print it out and write by hand — your choice.</p></div>
+    <div class="wcard"><div class="card-icon">💾</div><div class="card-title">Saves on your device</div><p class="card-text">Your entries save automatically on your own device. Nobody else can see them — they're yours.</p></div>
+  </div>
+</section>
+
+<!-- INSIDE -->
+<section class="pages" id="pages">
+  <div class="sec-tag">Inside the journal</div>
+  <h2 class="sec-title">Five pages, no endless scrolling</h2>
+  <div class="sec-sc">flip through like a real journal</div>
+  <div class="sec-div"><div class="sdl"></div><div class="sdd"></div><div class="sdl"></div></div>
+  <div class="pages-list" id="pagesList">
+    <div class="pitem"><div class="pnum">1</div><div class="pinfo"><div class="pinfo-title">My Café Date</div><div class="pinfo-sc">where I went & what I had ☕</div><p class="pinfo-text">Log the café, your order, the vibe, a coffee rating, and whether you'd come back.</p><div class="ptags"><span class="ptag">café name</span><span class="ptag">order</span><span class="ptag">vibe</span><span class="ptag">rating</span></div></div></div>
+    <div class="pitem"><div class="pnum">2</div><div class="pinfo"><div class="pinfo-title">Today's Mood</div><div class="pinfo-sc">how am I showing up? 🌸</div><p class="pinfo-text">Pick your mood, write why you chose today, what made you smile, and what you want to savour.</p><div class="ptags"><span class="ptag">mood picker</span><span class="ptag">why today</span><span class="ptag">one small joy</span></div></div></div>
+    <div class="pitem"><div class="pnum">3</div><div class="pinfo"><div class="pinfo-title">Gratitude</div><div class="pinfo-sc">the little things matter 🌿</div><p class="pinfo-text">A daily affirmation, three things you're grateful for, and something about this café you appreciate.</p><div class="ptags"><span class="ptag">affirmation</span><span class="ptag">3 gratitudes</span><span class="ptag">café love</span></div></div></div>
+    <div class="pitem"><div class="pnum">4</div><div class="pinfo"><div class="pinfo-title">Intentions</div><div class="pinfo-sc">what I'm calling in ✨</div><p class="pinfo-text">How you want to feel leaving, one kind thing for yourself, something to look forward to, your word for today.</p><div class="ptags"><span class="ptag">how I want to feel</span><span class="ptag">self-kindness</span><span class="ptag">my word</span></div></div></div>
+    <div class="pitem"><div class="pnum">5</div><div class="pinfo"><div class="pinfo-title">My Promise</div><div class="pinfo-sc">a love note to myself 🤍</div><p class="pinfo-text">A promise to yourself, how you'll take care of yourself after, and whether you'd come back here.</p><div class="ptags"><span class="ptag">my promise</span><span class="ptag">self-care</span><span class="ptag">come back?</span></div></div></div>
+  </div>
+</section>
+
+<!-- QUOTE -->
+<section class="quote-sec">
+  <svg width="38" height="46" viewBox="0 0 48 56" fill="none" style="margin-bottom:18px;opacity:.35"><path d="M8 18 Q7 8 24 8 Q41 8 40 18 L37 44 Q36 50 24 50 Q12 50 11 44Z" fill="#c9956a"/><path d="M40 24 Q50 24 50 31 Q50 38 40 38" stroke="#c9956a" stroke-width="2.5" fill="none" stroke-linecap="round"/><ellipse cx="24" cy="18" rx="16" ry="4" fill="#b07a52" opacity=".5"/><path d="M18 4 Q20 0 22 4" stroke="#c9956a" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M24 2 Q26 -2 28 2" stroke="#c9956a" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+  <p class="big-q">"You showed up for yourself today.<br>That's everything."</p>
+  <p class="big-q-attr">— Solo Café Journal closing page</p>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="sec-tag">How it works</div>
+  <h2 class="sec-title">So simple</h2>
+  <div class="sec-sc">no sign up, no payment, nothing</div>
+  <div class="sec-div"><div class="sdl"></div><div class="sdd"></div><div class="sdl"></div></div>
+  <div class="steps">
+    <div class="step"><div class="step-num">1</div><div class="step-info"><div class="step-title">Click "Open the Free Journal"</div><p class="step-text">The journal opens right in your browser — on your phone or laptop. No download, no sign up needed.</p></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-info"><div class="step-title">Write your entry</div><p class="step-text">Go through the 5 pages at your own pace. Tap or click your moods, fill in your thoughts, rate your café.</p></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-info"><div class="step-title">It saves on your device</div><p class="step-text">Everything you write saves automatically on your own device. Come back anytime — it's all still there.</p></div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-info"><div class="step-title">Print it if you want</div><p class="step-text">Hit the print button inside the journal to get a physical copy of your entry to keep, stick in a scrapbook, or journal alongside.</p></div></div>
+  </div>
+</section>
+
+<!-- CTA BOTTOM -->
+<section class="cta-bottom">
+  <svg width="200" height="200" style="position:absolute;top:-20px;right:-20px;opacity:.08;pointer-events:none" viewBox="0 0 155 155" fill="none"><ellipse cx="117" cy="38" r="22" fill="#f5c5a0"/><ellipse cx="117" cy="14" rx="10" ry="20" fill="#f0b48a" transform="rotate(10 117 14)"/><ellipse cx="141" cy="38" rx="10" ry="20" fill="#f0b48a" transform="rotate(-80 141 38)"/><circle cx="117" cy="38" r="9" fill="#c9956a"/><ellipse cx="83" cy="56" rx="6" ry="15" fill="#a8c48a" transform="rotate(50 83 56)"/></svg>
+  <div class="cta-bottom-title">Ready for your solo date?</div>
+  <div class="cta-bottom-sc">you deserve this</div>
+  <p class="cta-bottom-text">Grab your drink, find your corner, and open the journal. It's free, it's beautiful, and it's yours. ☕🌸</p>
+  <a href="solo-cafe-journal.html" class="btn-p">Open the Free Journal ☕</a>
+</section>
+
+<footer>
+  <div class="foot-logo">Solo Café Journal</div>
+  <p class="foot-text">a moment just for me &nbsp;·&nbsp; always free 🤍</p>
+  <p class="foot-text" style="margin-top:5px;font-size:13px">made with love · share it with a friend ☕</p>
+</footer>
+
+<script>
+const obs=new IntersectionObserver(es=>{es.forEach((e,i)=>{if(e.isIntersecting)setTimeout(()=>e.target.classList.add('vis'),i*120)})},{threshold:.15});
+document.querySelectorAll('.pitem').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
